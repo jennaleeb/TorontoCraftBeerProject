@@ -1,0 +1,17 @@
+{
+    "contents" : "# Learning Shiny\n\n# Server has R session running, sends the plot to the webpage\nlibrary(shiny)\n\n#Template for Shiny\n\nui <- fluidPage(\n  \n  # save css file in app directory and use. Doesn't need to be in www folder\n  includeCSS(\"file.css\"),\n  \n  tags$head(\n    # or link to css\n    tags$link(rel = \"stylesheet\", type = \"text/css\", href = \"file.css\")\n  ),\n  \n  h1(\"My First Shiny App\"),\n  fluidRow(\n    column(6, sliderInput(inputId = \"num\",\n                          label = \"Choose a number\",\n                          value = 25, min = 1, max = 100)),\n    \n    column(6, textInput(\n      inputId = \"title\",\n      label = \"Please write a title\",\n      value = \"Histogram of Random Normal Values\"))\n  ),\n  \n  actionButton(\"norm\", \"NORM\"),\n  actionButton(\"unif\", \"UNIFORM\"),\n  # each input needs a unique ID to reference after\n\n  \n  actionButton(\"change_title\", \"Change Title\"),\n  \n  plotOutput(outputId = \"hist\"),\n  verbatimTextOutput(\"stats\")\n)\n\nserver <- function(input, output){\n  rv <- reactiveValues(data = rnorm(100))\n  rv2 <- reactiveValues(title = \"Histogram of Random Normal Values\")\n  \n  observeEvent(input$norm, {rv$data <- rnorm(input$num)})\n  observeEvent(input$unif, {rv$data <- runif(input$num)})\n  observeEvent(input$change_title, {rv2$title <- input$title})\n  # builds a reactive object\n  # reactive expression is actually a function - call like a function not a data object\n  # make data frame once, use many times\n  data <- reactive({\n    rnorm(input$num)\n  })\n  \n  # from id above\n  # use {} to add lots of r code at once\n  \n  \n  \n  output$hist <- renderPlot({\n    \n    # access input value as input$input_id\n    hist(rv$data, main = rv2$title)\n    \n  })\n  \n  # Make title change only when you click it\n  # Creates a reactive expression\n  title <- eventReactive(input$change_title, {\n    input$title\n  })\n  \n  output$stats <- renderPrint({\n    summary(data())\n  })\n}\n\nshinyApp(ui=ui, server=server)\n\n# Main r script needs to be called app.R (put all files, css, etc in one folder)\n\n# Getting set up to deploy app:\n#devtools::install_github('rstudio/rsconnect')\n#rsconnect::setAccountInfo(name='jennaleeb',\n                          #token='1FD21EDFE96DF6B0E6A9100F7A4A6655',\n                          #secret='//034WdJA/lRU1GjYcjMgKaIIR3/ocn9U3n0rFut')\n#library(rsconnect)\n\n# Reactive functions\n# Use a code chunk to build objects, the object can respond to changes in a set of reactive values\n# Reactive expressions cache their values, dont rerun unless it's out of date\n\n# Code outside the server function will be run once per session -  place code where it will be\n# rerun as least as possible (ie loading files, etc). Code inside the server function runs once per user that logs into session\n# Code inside the render functions gets run the most often. Once per reaction. Bare minimum to update the rendered output!\n",
+    "created" : 1458073576077.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3162881358",
+    "id" : "D28997AE",
+    "lastKnownWriteTime" : 1457890305,
+    "path" : "~/Desktop/programming/R/ShinyTutorial/app.R",
+    "project_path" : null,
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "type" : "r_source"
+}

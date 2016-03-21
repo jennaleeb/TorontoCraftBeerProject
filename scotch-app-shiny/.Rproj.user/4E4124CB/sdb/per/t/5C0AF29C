@@ -1,0 +1,25 @@
+{
+    "contents" : "",
+    "created" : 1458075028454.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "5C0AF29C",
+    "lastKnownWriteTime" : 8315177835134542706,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "z7mjjrhqjp",
+        "caption" : "scotch_data",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=scotch_data&cache_key=z7mjjrhqjp",
+        "displayedObservations" : 109,
+        "environment" : "",
+        "object" : "scotch_data",
+        "totalObservations" : 109,
+        "variables" : 69
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "type" : "r_dataframe"
+}
