@@ -4,6 +4,7 @@ library(DT)
 library(xlsx)
 library(hash)
 library(dplyr)
+library(vegan)
 
 scotch_data <- import("data/scotch_data_cleaned.csv")
 scotch_data[,1] <- NULL
@@ -11,6 +12,7 @@ scotch.dist <- dist(scotch_data[,2:69], "binary")
 scotch.dist <- as.matrix(scotch.dist, labels=TRUE)
 colnames(scotch.dist) <- rownames(scotch.dist) <- scotch_data[,1]
 head(scotch.dist)
+
 # find the 5 most similar whiskeys to Bunnah
 
 bunnah_vec <- scotch.dist["Bunnahabha",]
@@ -30,6 +32,22 @@ closestScotch <- function(scotch_name) {
   round(scotch_frame,3)
 }
 
+## Using Jaccard method
+scotch.dist2 <- vegdist(lapply(scotch_data[2:109,], as.numeric), method = "jaccard", binary = TRUE)
+View(as.matrix(scotch.dist2))
+scotch.dist2 <- as.matrix(scotch.dist2)
+colnames(scotch.dist2) <- rownames(scotch.dist2) <- scotch_data[,1]
+
+bunnah_vec2 <- scotch.dist2["Bunnahabha",]
+bunnah_vec2 <- sort(bunnah_vec2)
+bunnah_vec2[2:6]
+bunnah_frame2 <- as.data.frame(bunnah_vec2[2:6])
+colnames(bunnah_frame2) <- "Closest Scotches to Bunnahabha"
+row.names(bunnah_frame2)
+
+data.num <- as.numeric(unlist(scotch_data[2:109,]))
+
+View(data.num)
 key <- read.xlsx2("scotch_key.xlsx", 1, startRow = 1)
 names(key)
 col.ids <- names(scotch_data)
