@@ -41,9 +41,15 @@ rownames(closestScotch("Bunnahabha"))
 scotch_data[grep("Bunnahabha", rownames(scotch_data)),]
 
 scotchDistClosest <- function(scotch_name) {
+  # make some empty matrices
   dist_frame <- as.data.frame(matrix(0, ncol = 69, nrow = 0))
+  m <- as.data.frame(matrix(0, ncol = 69, nrow = 0))
+  
+  # call the function to find the closest scotches
   scotch_closest_list <- closestScotch(scotch_name)
   rbind(dist_frame, scotch_data[grep(scotch_name, rownames(scotch_data)),]) -> dist_frame
+  
+  # make a new frame
   for (i in 1:length(rownames(scotch_closest_list))) {
     rbind(m, scotch_data[grep(rownames(scotch_closest_list)[i], rownames(scotch_data)),]) -> dist_frame[i,]
   }
@@ -52,12 +58,9 @@ scotchDistClosest <- function(scotch_name) {
   dist_frame
 }
 
-
+scotchDistClosest("Bunnahabha")
 d3heatmap(dist(scotchDistClosest("Bunnahabha"), "binary"), dendrogram = "row", colors="YlOrRd")
 help(d3heatmap)
-
-rbind(scotchDistClosest("Bunnahabha"), b)
-
 
 
 # Using Jaccard method
@@ -86,7 +89,9 @@ hash(col.ids[2:69], names(key))
 # figure out how to get colnames w/ 1's from dataset
 
 ui <- fluidPage(
-
+  
+  includeCSS("main.css"),
+  
   h1("A Nearest-Neighbour Analysis of Whiskey", align = "center"),
   
   br(),

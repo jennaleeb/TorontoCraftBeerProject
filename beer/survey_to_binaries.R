@@ -5,17 +5,8 @@ library(ggplot2)
 library(clusteval)
 library(Hmisc)
 
-beer_data <- import("BeerSurveyResponses_Test.csv")
-
-# use model.matrix to expand factors into binaries
-cbind(iris, model.matrix(~ Species + 0, data=iris))
-
-beer_data$Taste
-
-beer_data %>%
-cbind(., with(., model.matrix(~ Colour + 0)),
-                  with(., model.matrix(~ Opacity + 0)),
-                  with(., model.matrix(~ Taste + 0)))
+# Purpose of this file is to take the survey responses and make a data set of binary values for each beer
+beer_data <- import("Beer Survey (Responses).csv")
 
 
 
@@ -48,8 +39,22 @@ multiToBinary <- function(data, attr_name, colnum) {
   data <- cbind(data,result)
 }
 
+# import raw response data and call these functions
 beer_data <- multiToBinary(beer_data, "taste", 6)
 beer_data <- multiToBinary(beer_data, "body", 7)
+beer_data <- multiToBinary(beer_data, "opacity", 5)
+colnames(beer_data)
 
+# automate in a loop (all you need is original data, multiToBinary function and this
+feature_names <- cbind("Opacity" = 4, "Taste" = 5, "Body" = 6, "Carbonation" = 7, "Colour" = 11)
 
+for (i in 1:length(feature_names)) {
+  beer_data <- multiToBinary(beer_data, colnames(feature_names)[i], feature_names[i])
+}
 
+# cleanup
+beer_data$Timestamp <- NULL
+View(beer_data)
+beer_data$Taste.WellBalanced <- NULL
+
+write.csv(beer_data, "beer_binary_cleaned.csv")
