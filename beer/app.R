@@ -18,7 +18,7 @@ closestBeer <- function(beer_name) {
   beer_vec <- beer.dist[beer_name,]
   beer_vec <- sort(beer_vec)
   beer_frame <- as.data.frame(beer_vec[2:6])
-  colnames(beer_frame) <- paste("Distance to", beer_name)
+  colnames(beer_frame) <- paste("Euclidean Distance to", beer_name)
   round(beer_frame,3)
 }
 
@@ -45,9 +45,13 @@ beerDistClosest <- function(beer_name) {
 
 ui <- fluidPage(
   
-  #includeCSS("main.css"),
+  includeCSS("main.css"),
+  tags$link(
+    rel = "stylesheet",
+    href = 'https://fonts.googleapis.com/css?family=Raleway:400,100,700'
+  ),
   
-  h1("A Nearest-Neighbour Analysis of Craft Beer", align = "center"),
+  h1("An Analysis of Ontario Craft Beer", align = "center"),
   
   br(),
   # widget to choose scotch
@@ -55,11 +59,13 @@ ui <- fluidPage(
   
   fluidRow(
     
-    column(4, offset = 2, 
-           selectInput('name', ' ', c('Choose a favourite beer'='', beer_data$`Beer Name`), selectize=TRUE, width = '25em', selected = "Nut Brown")
-    ),
-    
-    column(4,
+    column(8, offset = 2, 
+           selectInput('beer_selector_main', ' ', c('Choose a favourite beer'='', beer_data$`Beer Name`), selectize=TRUE, selected = "Nut Brown")
+    )
+  ),
+  
+  fluidRow(
+    column(8, offset = 2,
            dataTableOutput('tableNeigbour')
     )
   ),
@@ -81,8 +87,8 @@ ui <- fluidPage(
 
 server <- function(input, output){
   output$tableNeigbour = renderDataTable(
-    if(!is.null(input$name)) {
-      closestBeer(input$name)
+    if(!is.null(input$beer_selector_main)) {
+      closestBeer(input$beer_selector_main)
     },
     
     options = list(searching = FALSE, paging = FALSE)
@@ -90,7 +96,7 @@ server <- function(input, output){
   )
   
   output$heatmap <- renderD3heatmap({
-    d3heatmap(dist(beerDistClosest(input$name), "binary"), colors="YlOrRd")
+    d3heatmap(dist(beerDistClosest(input$beer_selector_main), "binary"), colors="YlOrRd")
   })
   
   
